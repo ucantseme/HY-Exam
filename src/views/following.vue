@@ -12,11 +12,9 @@ import { Swiper, SwiperSlide } from "swiper/vue";
 import VideoPlayer from "@/components/VideoPlayer.vue";
 defineComponent({ VideoPlayer });
 const videoList = reactive([]);
-fetch("http://192.168.0.5:3000/following_list")
+fetch("http://192.168.0.2:3000/following_list")
   .then((res) => res.json())
   .then((res) => {
     videoList.push(...res.items);
   });
 </script>
-
-<style lang="scss" scoped></style>

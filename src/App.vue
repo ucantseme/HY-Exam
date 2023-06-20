@@ -3,13 +3,13 @@
     <nav class="absolute top-8 w-full z-10 flex justify-center">
       <router-link
         to="/following"
-        class="inline-block text-slate-400 pb-1 px-4 text-sm font-medium text-center border-transparent border-b-2"
+        class="inline-block text-slate-400 font-semibold pb-1 px-4 text-sm text-center border-transparent border-b-2"
       >
         關注中
       </router-link>
       <router-link
         to="/for-you"
-        class="inline-block text-slate-400 pb-1 px-4 text-sm font-medium text-center border-transparent border-b-2"
+        class="inline-block text-slate-400 font-semibold pb-1 px-4 text-sm text-center border-transparent border-b-2"
       >
         為您推薦
       </router-link>
@@ -19,8 +19,6 @@
     </div>
   </div>
 </template>
-
-<script setup></script>
 
 <style lang="scss" scoped>
 .router-link-active {
