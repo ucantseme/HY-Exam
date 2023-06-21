@@ -33,12 +33,18 @@
 </template>
 
 <script setup>
-import { shallowRef, watch, ref } from "vue";
+import { shallowRef, watch, onBeforeUnmount, onMounted } from "vue";
+import { useRoute } from "vue-router";
 import { useSwiperSlide } from "swiper/vue";
-import { VideoPlayer } from "@videojs-player/vue";
 import VideoPlayerControl from "./VideoPlayerControl.vue";
+import { useVideoStore } from "@/stores/video.js";
+import { VideoPlayer } from "@videojs-player/vue";
 import "video.js/dist/video-js.css";
 const props = defineProps({
+  index: {
+    type: Number,
+    required: true,
+  },
   videoInfo: {
     type: Object,
     required: true,
@@ -54,6 +60,9 @@ const playOptions = {
 const player = shallowRef();
 const state = shallowRef();
 const swiperSlide = useSwiperSlide();
+const videoStore = useVideoStore();
+const route = useRoute();
+const page = route.name;
 const handleMounted = (payload) => {
   player.value = payload.player;
   state.value = payload.state;
@@ -77,10 +86,25 @@ const controlVideo = () => {
 };
 watch(swiperSlide, (val) => {
   if (val.isActive) {
-    player.value?.play();
+    if (props.index !== videoStore.$state[page].lastIndex) {
+      player.value?.play();
+    }
+    videoStore.setLastIndex(page, props.index);
   } else {
     player.value?.pause();
     player.value?.currentTime(0);
   }
 });
+onMounted(() => {
+  if (props.index === videoStore.$state[page].lastIndex) {
+    updateCurrentTime(videoStore.$state[page].lastCurrentTime);
+    player.value?.pause();
+  }
+});
+onBeforeUnmount(() => {
+  if (props.index === videoStore.$state[page].lastIndex) {
+    videoStore.setLastCurrentTime(page, state.value.currentTime);
+  }
+});
+defineExpose({ updateCurrentTime, playVideo });
 </script>
