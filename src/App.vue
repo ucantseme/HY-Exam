@@ -1,6 +1,6 @@
 <template>
-  <div class="relative w-full h-full overflow-hidden">
-    <nav class="absolute top-8 w-full z-10 flex justify-center">
+  <div class="relative w-full h-full pt-10">
+    <nav class="absolute top-3 w-full z-10 flex justify-center">
       <router-link
         to="/following"
         class="inline-block text-slate-400 font-semibold pb-1 px-4 text-sm text-center border-transparent border-b-2"
