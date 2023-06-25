@@ -1,7 +1,8 @@
 <template>
   <div
     class="w-full h-full relative flex justify-center"
-    @touchstart.stop="controlVideo"
+    @touchmove.prevent="handleTouchMove"
+    @touchend.prevent="handleTouchEnd"
   >
     <video-player
       :src="videoInfo.play_url"
@@ -33,7 +34,7 @@
 </template>
 
 <script setup>
-import { shallowRef, watch, onBeforeUnmount, onMounted } from "vue";
+import { ref, shallowRef, watch, onBeforeUnmount, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { useSwiperSlide } from "swiper/vue";
 import VideoPlayerControl from "./VideoPlayerControl.vue";
@@ -63,6 +64,7 @@ const swiperSlide = useSwiperSlide();
 const videoStore = useVideoStore();
 const route = useRoute();
 const page = route.name;
+const isMoving = ref(true);
 const handleMounted = (payload) => {
   player.value = payload.player;
   state.value = payload.state;
@@ -80,15 +82,24 @@ const selectCurrentTime = (currentTime) => {
   updateCurrentTime(currentTime);
   playVideo();
 };
-const controlVideo = () => {
+const handleTouchMove = () => {
+  if (isMoving.value) return;
+  player.value.hasStarted(false);
+  isMoving.value = true;
+};
+const handleTouchEnd = () => {
+  player.value.hasStarted(true);
   const playing = state.value.playing;
-  player.value[playing ? "pause" : "play"]();
+  if (isMoving.value && swiperSlide.value.isActive) {
+    playVideo();
+  } else {
+    player.value[playing ? "pause" : "play"]();
+  }
+  isMoving.value = false;
 };
 watch(swiperSlide, (val) => {
   if (val.isActive) {
-    if (props.index !== videoStore.$state[page].lastIndex) {
-      player.value?.play();
-    }
+    player.value?.play();
     videoStore.setLastIndex(page, props.index);
   } else {
     player.value?.pause();
