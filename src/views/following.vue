@@ -17,7 +17,7 @@ const videoList = reactive([]);
 const videoStore = useVideoStore();
 const route = useRoute();
 const page = route.name;
-fetch("http://192.168.0.2:3000/following_list")
+fetch("http://localhost:3000/following_list")
   .then((res) => res.json())
   .then((res) => {
     videoList.push(...res.items);
